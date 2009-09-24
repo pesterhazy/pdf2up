@@ -1,0 +1,98 @@
+#!/bin/bash
+
+TMPFILE=""
+TMPFILE2=""
+TMPFILE3=""
+
+FUDGE=1 # default FUDGE 1%
+FORMAT=a4
+
+while getopts  "r:pf:t:" flag
+do
+  case "$flag" in
+  r) RANGE="$OPTARG" ;;
+  p) RANGE="2-end" ;;
+  f) FUDGE="$OPTARG" ;;
+  t) FORMAT="$OPTARG" ;;
+  *) exit 1
+  esac
+done
+
+shift $(( OPTIND - 1 )) # remove options
+
+if [ $# == 1 ]; then
+  OUT="${1%.pdf}-2up.pdf"
+elif [ $# == 2 ]; then
+  OUT="$2"
+else
+  echo 'Syntax: 2upps input.ps/input.pdf [output.pdf]'
+  exit 1
+fi
+
+cleanup() {
+  if [ -f "$TMPFILE4" ]; then
+    rm "$TMPFILE4"
+  fi
+  if [ -f "$TMPFILE3" ]; then
+    rm "$TMPFILE3"
+  fi
+  if [ -f "$TMPFILE2" ]; then
+    rm "$TMPFILE2"
+  fi
+  if [ -f "$TMPFILE" ]; then
+    rm "$TMPFILE"
+  fi
+}
+
+IN="$1"
+
+# if this is a PDF document, convert to PS first
+if file -b "$IN" | grep -q "PDF document"; then
+  # if RANGE is given, use pdftk first
+
+  if [ "$RANGE" != "" ]; then
+    TMPFILE4=`mktemp`
+    echo Selecting pages ...
+
+    rng=$(echo "$RANGE" | sed 's/,/ /g')
+
+    pdftk "$IN" cat $rng output "$TMPFILE4"
+    if [ $? != 0 ]; then
+      cleanup
+      exit 1
+    fi
+
+    IN="$TMPFILE4"
+  fi
+
+  TMPFILE3=`mktemp`
+  echo Converting input PDF to PS...
+  pdftops "$IN" "$TMPFILE3"
+  if [ $? != 0 ]; then
+    cleanup
+    exit 1
+  fi
+  IN="$TMPFILE3"
+fi
+
+TMPFILE=`mktemp`
+TMPFILE2=`mktemp`
+export PAPERFORMAT=$FORMAT
+
+echo Calculating dimensions using fudge=$FUDGE ...
+DIM=`psdim -p$FORMAT -2 --clip --fudge $FUDGE "$IN"`
+echo Clipping...
+pstops-clip -p$FORMAT "$DIM" "$IN" $TMPFILE
+if [ $? != 0 ]; then
+  cleanup
+  exit 1
+fi
+echo Converting to PDF...
+ps2pdf $TMPFILE "$TMPFILE2"
+if [ $? != 0 ]; then
+  cleanup
+  exit 1
+fi
+mv "$TMPFILE2" "$OUT"
+cleanup
+echo All done, Wrote "$OUT".
