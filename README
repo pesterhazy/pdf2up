@@ -24,6 +24,7 @@ As this is a (small) web application, you will need to put this in your web serv
 Requirements include:
 
 - PHP4/5 and apache
+- DWOO templating library (http://dwoo.org/download/dwoo-v1-1-0/download/0) - drop the files (Dwoo.php etc.) into lib/
 - upprint (http://www.mscs.dal.ca/~selinger/upprint/)
 - pstops-clip (included in upprint)
 - pdftops
