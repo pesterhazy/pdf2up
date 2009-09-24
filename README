@@ -29,3 +29,7 @@ Requirements include:
 - pstops-clip (included in upprint)
 - pdftops
 - pdftk
+
+For the templating engine, you need to make the cache/ and compile/ directories world-writable.
+
+chmod a+w cache/ compile/
