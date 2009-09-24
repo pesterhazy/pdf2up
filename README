@@ -1,0 +1,30 @@
+-------
+pdf2up
+-------
+
+This web interace, meant to run on a server, provides a convenient way to convert PDF files from single pages to journal-style two pages side by side on a single sheet of paper (2-up). It is particularly useful to print digital versions of articles from academic journals or monographs - whether scanned or all-digital PDF files - to regular (A4 or letter) paper.
+
+The chief advantage is that the font size is large enough to read comfortably and that no space is wasted on the print-outs, reducing paper usage.
+
+Often the crop box of PDF files does not exactly correspond to the content portion of the page. This is why printing a PDF file with a regular PDF viewer in the "multiple pages per sheet" mode does not always give best results. Often the print ends up too small. This is why the tool "upprint" is used to determine the crop box by actually looking at the content, i.e. what part of the page is used.
+
+Most likely this has many bugs.
+
+Licenced under the GPL.
+
+If you find this useful or have any improvements to contribute, drop me a line. 
+Email: gmail.com@pesterhazy (reverse)
+
+
+Installation
+*************
+
+As this is a (small) web application, you will need to put this in your web server's publically accessible folder.
+
+Requirements include:
+
+- PHP4/5 and apache
+- upprint (http://www.mscs.dal.ca/~selinger/upprint/)
+- pstops-clip (included in upprint)
+- pdftops
+- pdftk
