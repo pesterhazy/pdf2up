@@ -1,5 +1,12 @@
 <?
 
+function valid_uniqid($i) {
+    if (preg_match("/^[0-9a-fA-F]{13}$/",$i))
+        return true;
+    else
+        return false;
+}
+
 function fail($info,$msg=null)
 {
     if (is_array($info))
@@ -14,7 +21,7 @@ function fail($info,$msg=null)
 }
 function handle_upload() {
     $tmpfname = $_FILES["file"]["tmp_name"];
-    $uuid=uniqid(rand(), true);
+    $uuid=uniqid();
     $fname="/tmp/pdf2upjob-".$uuid.".pdf";
     if ( !move_uploaded_file($tmpfname,$fname) )
         die("Could not move uploaded file.");
@@ -58,17 +65,30 @@ function handle_upload() {
         fail($output,"output file too small");
     }
 
-    show_pdf($outfname);
-    exit;
-}
-
-function show_pdf($fname) {
     $outname = $_FILES["file"]["name"];
     $outname = preg_replace("/.pdf$/i","",$outname);
     $outname .= "-2x1.pdf";
 
+    header('Location: index.php?action=view&uu='.$uuid."&fn=".urlencode($outname));
+    exit;
+}
+
+function handle_view() {
+    $uuid = $_GET["uu"];
+    $outname = $_GET["fn"];
+
+    if (!valid_uniqid($uuid))
+        fail("invalid document id");
+
+    $outfname="/tmp/pdf2upjob-".$uuid."-out.pdf";
+
+    show_pdf($outfname,$outname);
+}
+
+function show_pdf($fname,$outname) {
+
     header('Content-type: application/pdf');
-    header('Content-Disposition: inline; filename="'.$outname);
+    header('Content-Disposition: inline; filename="'.$outname.'"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Content-Transfer-Encoding: binary');
     header('Conent-Length: ' . filesize($fname));

@@ -17,8 +17,8 @@
   <input name="plist" type="text" value="" /> 
   </div> 
   <div> <label for="format">Paper format</label>
-  <input name="format" type="radio" value="a4" checked="checked" />A4 &nbsp; 
-  <input name="format" type="radio" value="letter" />letter
+  <input name="format" type="radio" value="letter" checked="checked" />letter &nbsp; 
+  <input name="format" type="radio" value="a4" />A4
   </div> 
 </fieldset>
 

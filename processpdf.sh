@@ -7,7 +7,7 @@ exec 2>> /tmp/xlog.txt
 
 echo Command line: "$@"
 echo Date: $(date)
-/home/loevborg/bin/2upps "$@"
+./2upps "$@"
 
 # clean up tempfiles older than 60 minutes
 
