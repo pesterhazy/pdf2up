@@ -8,12 +8,14 @@ session_start();
 function select_action()
 {
     if ( !empty($_FILES) ) { // POST
-        handle_upload();
+        return handle_upload();
+    }
+    if ( $_GET["action"] == "view" ) {
+        return handle_view();
     }
     else {
-        $content = handle_index();
+        return handle_index();
     }
-    return $content;
 }
 
 function main() {
